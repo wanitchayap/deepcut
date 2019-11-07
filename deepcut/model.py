@@ -7,6 +7,11 @@ from tensorflow.keras.layers import Input, Dense, Embedding, \
 from tensorflow.keras.layers import TimeDistributed
 from tensorflow.keras.optimizers import Adam
 
+##########
+from keras_contrib.layers import CRF
+########
+
+
 def conv_unit(inp, n_gram, no_word=200, window=2):
     out = Conv1D(no_word, window, strides=1, padding="valid", activation='relu')(inp)
     out = TimeDistributed(Dense(5, input_shape=(n_gram, no_word)))(out)
@@ -38,9 +43,20 @@ def get_convo_nn2(no_word=200, n_gram=21, no_char=178):
 
     x = Flatten()(x)
     x = Dense(100, activation='relu')(x)
-    out = Dense(1, activation='sigmoid')(x)
+
+    ########################
+    # out = Dense(1, activation='sigmoid')(x)
+
+    crf = CRF(n_gram)  ## ???????
+    out = crf(model)
+    ##########################
 
     model = Model(inputs=[input1, input2], outputs=out)
-    model.compile(optimizer=Adam(),
-                  loss='binary_crossentropy', metrics=['acc'])
+
+    ####################
+    # model.compile(optimizer=Adam(),
+               #   loss='binary_crossentropy', metrics=['acc'])
+    model.compile(optimizer="rmsprop", loss=crf.loss_function,
+                  metrics=[crf.accuracy])
+    #####################
     return model
