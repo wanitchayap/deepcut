@@ -48,7 +48,7 @@ def get_convo_nn2(no_word=200, n_gram=21, no_char=178):
     # out = Dense(1, activation='sigmoid')(x)
 
     crf = CRF(n_gram)  ## ???????
-    out = crf(model)
+    out = crf(x)
     ##########################
 
     model = Model(inputs=[input1, input2], outputs=out)
