@@ -45,7 +45,7 @@ def get_convo_nn2(no_word=200, n_gram=21, no_char=178):
     x = Dense(100, activation='relu')(x)
 
     ########################
-    # out = Dense(1, activation='sigmoid')(x)
+    #out = Dense(1, activation='sigmoid')(x)
 
     # crf = CRF(n_gram)  ## ???????
     # out = crf(x)
@@ -54,15 +54,14 @@ def get_convo_nn2(no_word=200, n_gram=21, no_char=178):
 
     crf = CRF(2, sparse_target=False) # num_label
     loss = crf.loss_function
-    pred = crf(z)
+    out = crf(x)
     ##########################
 
-    model = Model(inputs=[input1, input2], outputs=pred)
+    model = Model(inputs=[input1, input2], outputs=out)
 
     ####################
     # model.compile(optimizer=Adam(),
                #   loss='binary_crossentropy', metrics=['acc'])
-    model.compile(optimizer="rmsprop", loss=crf.loss_function,
-                  metrics=[crf.accuracy])
+    model.compile(optimizer="adam", loss=loss)
     #####################
     return model
