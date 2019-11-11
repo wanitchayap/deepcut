@@ -8,7 +8,7 @@ from tensorflow.keras.layers import TimeDistributed
 from tensorflow.keras.optimizers import Adam
 
 ##########
-from keras_contrib.layers import CRF
+from layers import CRF
 ########
 
 
@@ -50,10 +50,14 @@ def get_convo_nn2(no_word=200, n_gram=21, no_char=178):
     # crf = CRF(n_gram)  ## ???????
     # out = crf(x)
 
-    out = x.add(CRF(100))
+    # out = x.add(CRF(100))
+
+    crf = CRF(2, sparse_target=False) # num_label
+    loss = crf.loss_function
+    pred = crf(z)
     ##########################
 
-    model = Model(inputs=[input1, input2], outputs=out)
+    model = Model(inputs=[input1, input2], outputs=pred)
 
     ####################
     # model.compile(optimizer=Adam(),
